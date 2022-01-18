@@ -1,0 +1,125 @@
+Sound:
+    Spectrogram_Dim: 1025
+    Mel_Dim: 80
+    Frame_Length: 1024
+    Frame_Shift: 256
+    Sample_Rate: 24000
+    Mel_F_Min: 125
+    Mel_F_Max: 7600
+    Max_Abs_Mel: 4
+    Confidence_Threshold: 0.6
+    Gaussian_Smoothing_Sigma: 0.0
+    Quantinized_Pitch_Dim: 256
+
+
+Content_Encoder:
+    Conv:
+        Channels: [512, 512, 512]
+        Kernel_Sizes: [5, 5, 5]
+        Use_GroupNorm: true
+    LSTM:
+        Sizes: 16
+        Stacks: 2
+    Frequency: 16
+
+Style_Encoder:
+    Embedding_Size: 256
+    LSTM:
+        Sizes: 256
+        Stacks: 3
+    Inference:
+        Samples: 5
+        Slice_Length: 64
+        Overlap_Length: 32
+    Checkpoint_Path: './Style_Encoder/Example_Results/Checkpoint/S_100000.pkl'
+    
+Decoder:
+    Use_Pitch: true 
+  
+    Pre_LSTM:
+        Sizes: 512 # In official code 512, paper 1024
+        Stacks: 3   # Vanilla: 1
+    Conv:
+        Channels: [] # Vanilla: [512, 512, 512]
+        Kernel_Sizes:  [] # Vanilla: [5, 5, 5]
+        Use_GroupNorm: true
+        Dropout: 0.0    # This part is customized.
+    Post_LSTM:
+        Sizes: 1024
+        Stacks: 0  
+
+Postnet:
+    Channels: [512, 512, 512, 512]
+    Kernel_Sizes: [5, 5, 5, 5]
+    Activation: 'relu'  
+    Use_GroupNorm: true
+
+WaveNet:
+    Residual_Channels: 64
+    ResConvGLU:
+        Blocks: 3
+        Stacks_in_Block: 10
+        Gate_Channels: 128
+        Kernel_Size: 3
+        Skip_Channels: 64
+        Dropout_Rate: 0.0
+    Upsample:
+        Scales: [4, 4, 4, 4]
+        Pad: 2
+    
+    Checkpoint_Path: 'Checkpoint/S_400000.pkl'
+
+Train:
+    Use_Pattern_Cache: true
+    Train_Pattern:
+        #Path: '../Pattern/SS.SR24K.Pattern/Train'
+        Path: 'SS.SR24K.VCTK106.Pattern/Train'
+        Metadata_File: 'METADATA.PICKLE'   # 'METADATA.PICKLE'
+        Mel_Length: # This must be a multiple of Content_Encoder/Frequency
+            Min: 64
+            Max: 192
+        Interpolation:
+            Min: 0.7
+            Max: 1.35
+        Energy_Variance: # To calculate simply
+            Min: 0.35
+            Max: 1.0
+        Use_Style_from_Content_Mel: false
+        Accumulated_Dataset_Epoch: 1   # This is to prevent slow down from torch.utils.data.DataLoader when speaker is small.        
+    Eval_Pattern:
+        # Path: '../Pattern/SS.SR24K.Pattern/Eval'
+        Path: 'SS.SR24K.VCTK106.Pattern/Eval'
+        Metadata_File: 'METADATA.PICKLE'
+    Num_Workers: 2
+    Batch_Size: 2
+    Loss_Weight:
+        Pre_Mel_L1: 0.0
+        Post_Mel_L1: 0.0
+        Pre_Mel_L2: 1.0
+        Post_Mel_L2: 1.0
+        Content_L1: 1.0
+        Content_L2: 0.0
+    Learning_Rate:
+        Initial: 1.0e-4
+        Decay_Step: 1000000 # Not applied
+        Decay_Rate: 1.0 # Not applied
+    ADAM:
+        Beta1: 0.9
+        Beta2: 0.999
+        Epsilon: 1.0e-7
+    Gradient_Norm: 10.0
+    Max_Step: 400000
+    Checkpoint_Save_Interval: 5000
+    Logging_Interval: 100
+    Evaluation_Interval: 1000
+    Inference_Interval: 5000
+    Initial_Inference: true
+
+# Inference_Path: './SR24K.Results.VCTK/Inference'
+# Checkpoint_Path: './SR24K.Results.VCTK/Checkpoint'
+# Log_Path: './SR24K.Results.VCTK/Log'
+Inference_Path: 'AutoVC.Results/SR24K.Results.VCTKLibri/Inference'
+Checkpoint_Path: 'AutoVC.Results/SR24K.Results.VCTKLibri/Checkpoint'
+Log_Path: 'AutoVC.Results/SR24K.Results.VCTKLibri/Log'
+Use_Mixed_Precision: true  # apex is required.
+Device: '0'
