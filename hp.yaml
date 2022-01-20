@@ -91,7 +91,7 @@ Train:
         Path: 'SS.SR24K.VCTK106.Pattern/Eval'
         Metadata_File: 'METADATA.PICKLE'
     Num_Workers: 2
-    Batch_Size: 2
+    Batch_Size: 5
     Loss_Weight:
         Pre_Mel_L1: 0.0
         Post_Mel_L1: 0.0
@@ -108,7 +108,7 @@ Train:
         Beta2: 0.999
         Epsilon: 1.0e-7
     Gradient_Norm: 10.0
-    Max_Step: 400000
+    Max_Step: 50000
     Checkpoint_Save_Interval: 5000
     Logging_Interval: 100
     Evaluation_Interval: 1000
