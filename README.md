@@ -10,14 +10,13 @@
 
 
  ***Style Encoder***:
-referred to the speaker encoder used in 
-https://github.com/CODEJIN/Speaker_Embedding_Torch
-and fine tuned it on my data 
+* referred to the speaker encoder used in 
+    *https://github.com/CODEJIN/Speaker_Embedding_Torch and fine tuned it on my data 
 
 ***Content Encoder and Decoder***:
-referred to the architecture in the paper and the codes and fintuned it on my data and trained again
+   * referred to the architecture in the paper and the codes and fintuned it on my data and trained again
 
  ***Results***:
-Results are stored in results/ folder
+  *  Results are stored in results/ folder
 
 
