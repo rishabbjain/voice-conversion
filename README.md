@@ -11,7 +11,7 @@
 
  ***Style Encoder***:
 * Referred to the speaker encoder used in 
-    *https://github.com/CODEJIN/Speaker_Embedding_Torch and fine tuned it on my data 
+    *https://github.com/CODEJIN/Speaker_Embedding_Torch and fine tuned it on my data. The model weights are loaded in the checkpoints folder
 
 ***Content Encoder and Decoder***:
    * Referred to the architecture in the paper and the codes and fintuned it on my data and trained again
